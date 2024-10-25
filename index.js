@@ -7,8 +7,8 @@ const { Server } = require("socket.io");
 const dotenv = require("dotenv").config();
 const rateLimit = require("express-rate-limit");
 
-const bodyParser = require('body-parser')
-app.use(bodyParser.json())
+const bodyParser = require("body-parser");
+app.use(bodyParser.json());
 
 //Routes
 const users = require("./routes/users");
@@ -17,7 +17,7 @@ const news = require("./routes/news");
 const io = new Server(server, {
   cors: {
     origin: "*",
-    allowedHeaders: ["*"]
+    allowedHeaders: ["*"],
   },
 });
 
@@ -33,6 +33,10 @@ app.use(
 app.use("/api/users", users);
 app.use("/api/news", news);
 
+app.get("/", async (req, res) => {
+  return res.json({ message: "Hii this is news flash backend" }).status(200);
+});
+
 let activeUsers = new Map();
 
 // Socket Connections
@@ -40,31 +44,29 @@ io.on("connection", (socket) => {
   console.log("a user connected with id:", socket.id);
   socket.emit("welcome-message", "Welcome in News Flash WS");
 
-  socket.on('user_details', data => {
-    if(!activeUsers.has(data?.email)) {
+  socket.on("user_details", (data) => {
+    if (!activeUsers.has(data?.email)) {
       activeUsers.set(data?.email, data);
     }
 
     console.log(data);
-  })
-  
+  });
+
   //last seen event
   socket.on("load_window", (user) => {
-    console.log("unload window of user ", user?.id)
+    console.log("unload window of user ", user?.id);
     console.log("last seen at ", new Date(Date.now()).toUTCString());
 
     io.emit("last_seen_event", {
       time: new Date(Date.now()),
-      msg: "last seen at "
+      msg: "last seen at ",
     });
-
-    
   });
 
   socket.on("unload_window", (user) => {
-    console.log("load window")
+    console.log("load window");
     io.emit("last_seen_event", {
-      msg: `${activeUsers.get(user?.email)?.given_name} active now`
+      msg: `${activeUsers.get(user?.email)?.given_name} active now`,
     });
   });
 
@@ -72,7 +74,7 @@ io.on("connection", (socket) => {
     console.log(`${userId} likes ${articleId}`);
 
     // socket.emit("event:send_like_notification");
-  })
+  });
 
   socket.on("disconnect", () => {
     console.log("a user disconnected");
