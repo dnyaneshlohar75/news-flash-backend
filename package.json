@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx prisma generate"
+    "migrate:deploy": "prisma migrate deploy",
+    "build": "prisma migrate deploy && prisma generate && npm run generate"
   },
   "author": "dnyanesh lohar",
   "license": "ISC",
