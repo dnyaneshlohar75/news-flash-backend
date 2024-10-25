@@ -6,7 +6,8 @@ const db = new PrismaClient({
 
 db.$connect().then(() => {
   console.log("DATABASE CONNECTED");
-}).catch(() => {
+}).catch((e) => {
+  console.log(e.message)
   console.log("[ERROR] DATABASE CONNECTION FAILED");
 });
 
