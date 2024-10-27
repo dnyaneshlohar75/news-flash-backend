@@ -5,7 +5,6 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 
 const dotenv = require("dotenv").config();
-const rateLimit = require("express-rate-limit");
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -23,12 +22,6 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 3001;
 
-app.use(
-  rateLimit({
-    max: 100,
-    windowMs: 24 * 60 * 60 * 1000,
-  })
-);
 
 app.use("/api/users", users);
 app.use("/api/news", news);
